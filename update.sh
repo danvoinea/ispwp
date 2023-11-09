@@ -1,12 +1,21 @@
 #!/bin/bash
 
+cd /tmp
+
 # Ensure you have permissions to search and execute commands
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root"
     exit 1
 fi
 
-# The command you wish to execute
+#Install wp cli
+if ! command -v wp &> /dev/null
+then
+    echo "wp cli could not be found - installing"
+    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    chmod +x wp-cli.phar
+    sudo mv wp-cli.phar /usr/local/bin/wp
+fi
 
 # Find all wp-config.php files
 find /var/www/clients/ -type f -name wp-links-opml.php 2>/dev/null | while read -r FILE_PATH; do
